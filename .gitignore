@@ -1,0 +1,8 @@
+# Env variables
+.env*
+
+# Python
+__pycache__/
+
+# IDE
+.idea/
