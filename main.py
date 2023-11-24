@@ -1,12 +1,22 @@
+# Description: Main file of the project
+# Author: Sebastián Gámez Ariza
+
+# Import FastAPI libraries
 from fastapi import FastAPI
 
+# Import database connection
+from database.connection import engine
+from database.test_database import test_database_connection
+
+# Import the routes
+from routes.client_route import client_router
+
+# Test the database connection
+test_database_connection(engine)
+
+# Create the app
 app = FastAPI()
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+# Include the routes
+app.include_router(client_router)
 
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
