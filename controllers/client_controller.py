@@ -6,7 +6,7 @@ from services.client_service import ClientService
 
 # Importing types
 from type.response_type import ResponseType
-from type.client_type import ClientType
+from type.client_type import ClientType, ClientTypeUpdate
 
 
 # Create the client controller class
@@ -32,7 +32,7 @@ class ClientController:
         return self.client_service.create_client(client)
     
     # Create method to update a client
-    def update_client(self, client: ClientType) -> ResponseType:
+    def update_client(self, client: ClientTypeUpdate) -> ResponseType:
         # Return the response type
         return self.client_service.update_client(client)
     

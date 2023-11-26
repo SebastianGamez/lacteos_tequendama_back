@@ -9,3 +9,9 @@ from pydantic import BaseModel
 class ClientType(BaseModel):
     cli_id: int | None = None
     cli_nombre: str
+
+
+# Create the client type update class
+class ClientTypeUpdate(BaseModel):
+    cli_id: int
+    cli_nombre: str | None = None

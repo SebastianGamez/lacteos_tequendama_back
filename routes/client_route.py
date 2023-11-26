@@ -10,7 +10,7 @@ from controllers.client_controller import ClientController
 
 # Import types
 from type.response_type import ResponseType
-from type.client_type import ClientType
+from type.client_type import ClientType, ClientTypeUpdate
 
 # Create the client router instance
 client_controller: ClientController = ClientController()
@@ -63,7 +63,7 @@ async def create_client(client: ClientType):
 
 # Create the route to update a client
 @client_router.put("/", response_model=ResponseType)
-async def update_client(client: ClientType):
+async def update_client(client: ClientTypeUpdate):
     # Get the response
     response: ResponseType = client_controller.update_client(client)
     # Check if the status is 200

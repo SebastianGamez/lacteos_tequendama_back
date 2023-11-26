@@ -6,7 +6,7 @@ from sqlalchemy import text, create_engine
 from database.connection import engine
 
 # Importing types
-from type.client_type import ClientType
+from type.client_type import ClientType, ClientTypeUpdate
 from type.response_type import ResponseType
 
 
@@ -103,24 +103,23 @@ class ClientService:
         return response_type
 
     # Create a method to update the client
-    def update_client(self, client: ClientType) -> ResponseType:
+    def update_client(self, client: ClientTypeUpdate) -> ResponseType:
         # Create the response type
         response_type: ResponseType[ClientType]
         try:
             # Create the connection
             with self.engine.connect() as conn:
                 for client_key, client_value in dict(client).items():
-                    # Execute the query
-                    conn.execute(
-                        text(
-                            f"update cliente set {client_key} = :{client_key} where cli_id = :cli_id"
-                        ),
-                        {
-                            client_key: client_value,
-                            "cli_id": client.cli_id
-                        }
+                    if client_value is not None and client_key != "cli_id":
+                        # Execute the query
+                        conn.execute(
+                            text(f"update cliente set {client_key} = :{client_key} where cli_id = :cli_id"),
+                            {
+                                client_key: client_value,
+                                "cli_id": client.cli_id
+                            }
                         )
-                    conn.commit()
+                conn.commit()
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
