@@ -11,5 +11,4 @@ def test_database_connection(egn: create_engine):
         # Execute the query
         result = conn.execute(text("select 'DATABASE CONNECTION SUCCESSFUL'"))
         # Print the result
-
         print(f'\n', f'{list(result.all())[0][0]}'.center(105, '-'), end='\n\n')
