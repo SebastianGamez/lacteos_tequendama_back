@@ -3,6 +3,7 @@
 
 # Import FastAPI libraries
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 # Import database connection
 from database.connection import engine
@@ -18,7 +19,15 @@ test_database_connection(engine)
 # Create the app
 app = FastAPI()
 
+# Set cors
+app.add_middleware(
+     CORSMiddleware,
+     allow_origins=["*"],
+     allow_credentials=True,
+     allow_methods=["*"],
+     allow_headers=["*"],
+)
+
 # Include the routes
 app.include_router(client_router)
 app.include_router(buy_router)
-
