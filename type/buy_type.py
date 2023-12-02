@@ -1,9 +1,9 @@
 # Description: This file is used to create the buy type
 # Author: Sebastian Gámez Ariza
-import datetime
 
 # Importing libraries
 from pydantic import BaseModel
+import datetime
 
 
 # Create the buy type class

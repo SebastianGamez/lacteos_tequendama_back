@@ -36,9 +36,10 @@ class ClientService:
             # Create the response type
             response_type = ResponseType(
                 status=500,
-                message=str(e),
-                data=[]
+                message=str(e)
             )
+            # Log the error
+            print(e)
 
         # Return the response type
         return response_type
@@ -65,9 +66,10 @@ class ClientService:
             # Create the response type
             response_type = ResponseType(
                 status=500,
-                message=str(e),
-                data=[]
+                message=str(e)
             )
+            # Log the error
+            print(e)
 
         # Return the response type
         return response_type
@@ -96,8 +98,10 @@ class ClientService:
             # Create the response type
             response_type = ResponseType(
                 status=500,
-                message=str(e),
+                message=str(e)
             )
+            # Log the error
+            print(e)
 
         # Return the response type
         return response_type
@@ -129,8 +133,10 @@ class ClientService:
             # Create the response type
             response_type = ResponseType(
                 status=500,
-                message=str(e),
+                message=str(e)
             )
+            # Log the error
+            print(e)
 
         # Return the response type
         return response_type
@@ -159,8 +165,10 @@ class ClientService:
             # Create the response type
             response_type = ResponseType(
                 status=500,
-                message=str(e),
+                message=str(e)
             )
+            # Log the error
+            print(e)
 
         # Return the response type
         return response_type

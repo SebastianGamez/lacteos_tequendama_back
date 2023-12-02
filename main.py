@@ -12,6 +12,7 @@ from database.test_database import test_database_connection
 # Import the routes
 from routes.client_route import client_router
 from routes.buy_route import buy_router
+from routes.employee_route import employee_router
 
 # Test the database connection
 test_database_connection(engine)
@@ -31,3 +32,4 @@ app.add_middleware(
 # Include the routes
 app.include_router(client_router)
 app.include_router(buy_router)
+app.include_router(employee_router)

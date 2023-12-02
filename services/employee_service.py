@@ -1,4 +1,4 @@
-# Description: This file handles the database connection related with the buy
+# Description: This file handles the database connection related with the employee
 # Author: Sebastian Gámez Ariza
 
 
@@ -7,30 +7,30 @@ from sqlalchemy import text, create_engine
 from database.connection import engine
 
 # Importing types
-from type.buy_type import BuyType, BuyTypeUpdate
+from type.employee_type import EmployeeType, EmployeeTypeUpdate
 from type.response_type import ResponseType
 
 
-# Create the buy services class
-class BuyService:
+# Create the employee services class
+class EmployeeService:
 
     # Create constructor
     def __init__(self) -> None:
         self.engine: create_engine = engine
 
-    # Create method to get all buys
-    def get_all_buys(self) -> ResponseType[list[BuyType]]:
+    # Create method to get all employees
+    def get_all_employees(self) -> ResponseType[list[EmployeeType]]:
         # Create the response type
-        response_type: ResponseType[list[BuyType]]
+        response_type: ResponseType[list[EmployeeType]]
         try:
             # Create the connection
             with self.engine.connect() as conn:
                 # Execute the query
-                result = conn.execute(text("select * from compra"))
+                result = conn.execute(text("select * from empleado"))
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
-                    message="Buys found successfully",
+                    message="Employees found successfully",
                     data=result.all()
                 )
         except Exception as e:
@@ -45,27 +45,20 @@ class BuyService:
         # Return the response type
         return response_type
 
-    # Create method to get a buy by id
-    def get_buy_by_id(self, com_codigo: int) -> ResponseType[BuyType]:
+    # Create method to get an employee by id
+    def get_employee_by_id(self, emp_id: int) -> ResponseType[EmployeeType]:
         # Create the response type
-        response_type: ResponseType[BuyType]
+        response_type: ResponseType[EmployeeType]
         try:
             # Create the connection
             with self.engine.connect() as conn:
                 # Execute the query
-                buy, *_ = conn.execute(text("select * from compra where com_codigo = :id"), {"id": com_codigo})
+                employee, *_ = conn.execute(text("select * from empleado where emp_id = :id"), {"id": emp_id})
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
-                    message="Buy found successfully",
-                    data={
-                        'com_codigo': buy.com_codigo,
-                        'com_fecha': buy.com_fecha,
-                        'com_cantidad': buy.com_cantidad,
-                        'com_precio': buy.com_precio,
-                        'com_total': buy.com_total,
-                        'prv_nit': buy.prv_nit
-                    }
+                    message="Employee found successfully",
+                    data=employee
                 )
         except Exception as e:
             # Create the response type
@@ -79,64 +72,31 @@ class BuyService:
         # Return the response type
         return response_type
 
-    # Create method to create a buy
-    def create_buy(self, buy: BuyType) -> ResponseType:
+    # Create method to create an employee
+    def create_employee(self, employee: EmployeeType) -> ResponseType:
         # Create the response type
-        response_type: ResponseType[BuyType]
+        response_type: ResponseType[EmployeeType]
         try:
             # Create the connection
             with self.engine.connect() as conn:
                 # Execute the query
                 conn.execute(
-                    text("insert into compra (com_fecha, com_cantidad, com_precio, com_total, prv_nit) values (:com_fecha, :com_cantidad, :com_precio, :com_total, :prv_nit)"),
+                    text("insert into empleado(emp_nombre, emp_apellido, emp_telefono, emp_direccion, emp_correo, emp_cargo) values (:emp_nombre, :emp_apellido, :emp_telefono, :emp_direccion, :emp_correo, :emp_cargo)"),
                     {
-                        "com_fecha": buy.com_fecha,
-                        "com_cantidad": buy.com_cantidad,
-                        "com_precio": buy.com_precio,
-                        "com_total": buy.com_total,
-                        "prv_nit": buy.prv_nit
+                        "emp_nombre": employee.emp_nombre,
+                        "emp_apellido": employee.emp_apellido,
+                        "emp_telefono": employee.emp_telefono,
+                        "emp_direccion": employee.emp_direccion,
+                        "emp_correo": employee.emp_correo,
+                        "emp_cargo": employee.emp_cargo
                     }
                 )
-                # Commit the transaction
+                # Commit the changes
                 conn.commit()
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
-                    message="Buy created successfully",
-                )
-        except Exception as e:
-            # Create the response type
-            response_type = ResponseType(
-                status=500,
-                message=str(e)
-            )
-
-        # Return the response type
-        return response_type
-
-    # Create method to update a buy
-    def update_buy(self, buy: BuyTypeUpdate) -> ResponseType:
-        # Create the response type
-        response_type: ResponseType[BuyType]
-        try:
-            # Create the connection
-            with self.engine.connect() as conn:
-                for buy_key, buy_value in dict(buy).items():
-                    if buy_value is not None and buy_key != "com_codigo":
-                        # Execute the query
-                        conn.execute(
-                            text(f"update compra set {buy_key} = :{buy_key} where com_codigo = :com_codigo"),
-                            {
-                                "com_codigo": buy.com_codigo,
-                                buy_key: buy_value
-                            }
-                        )
-                # Commit the transaction
-                conn.commit()
-                # Create the response type
-                response_type = ResponseType(
-                    status=200,
-                    message="Buy updated successfully",
+                    message="Employee created successfully"
                 )
         except Exception as e:
             # Create the response type
@@ -150,21 +110,56 @@ class BuyService:
         # Return the response type
         return response_type
 
-    # Create method to delete a buy
-    def delete_buy(self, com_codigo: int) -> ResponseType:
+    # Create method to update an employee
+    def update_employee(self, employee: EmployeeTypeUpdate) -> ResponseType:
         # Create the response type
-        response_type: ResponseType[BuyType]
+        response_type: ResponseType[EmployeeTypeUpdate]
         try:
             # Create the connection
             with self.engine.connect() as conn:
-                # Execute the query
-                conn.execute(text("delete from compra where com_codigo = :com_codigo"), {"com_codigo": com_codigo})
-                # Commit the transaction
+                for employee_key, employee_value in employee.dict(exclude_none=True).items():
+                    # Execute the query
+                    conn.execute(
+                        text(f"update empleado set {employee_key} = :value where emp_id = :id"),
+                        {
+                            "value": employee_value,
+                            "id": employee.emp_id
+                        }
+                    )
+                # Commit the changes
                 conn.commit()
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
-                    message="Buy deleted successfully",
+                    message="Employee updated successfully"
+                )
+        except Exception as e:
+            # Create the response type
+            response_type = ResponseType(
+                status=500,
+                message=str(e)
+            )
+            # Log the error
+            print(e)
+
+        # Return the response type
+        return response_type
+
+    # Create method to delete an employee
+    def delete_employee(self, emp_id: int) -> ResponseType:
+        # Create the response type
+        response_type: ResponseType[EmployeeType]
+        try:
+            # Create the connection
+            with self.engine.connect() as conn:
+                # Execute the query
+                conn.execute(text("delete from empleado where emp_id = :id"), {"id": emp_id})
+                # Commit the changes
+                conn.commit()
+                # Create the response type
+                response_type = ResponseType(
+                    status=200,
+                    message="Employee deleted successfully"
                 )
         except Exception as e:
             # Create the response type
