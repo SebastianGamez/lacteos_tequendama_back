@@ -14,6 +14,7 @@ from routes.client_route import client_router
 from routes.buy_route import buy_router
 from routes.employee_route import employee_router
 from routes.equipment_route import equipment_router
+from routes.sell_route import sell_router
 from routes.product_route import product_router
 
 # Test the database connection
@@ -36,4 +37,5 @@ app.include_router(client_router)
 app.include_router(buy_router)
 app.include_router(employee_router)
 app.include_router(equipment_router)
+app.include_router(sell_router)
 app.include_router(product_router)
