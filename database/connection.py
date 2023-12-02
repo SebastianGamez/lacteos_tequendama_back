@@ -3,11 +3,7 @@
 
 # Importing libraries
 from sqlalchemy import create_engine
-from dotenv import load_dotenv
-import os
-
-# Loading environment variables
-load_dotenv('.env')
+from config.env_variables_config import DATABASE_URL
 
 # Creating connection to the database
-engine = create_engine(os.getenv('DATABASE_URL'))
+engine = create_engine(DATABASE_URL)
