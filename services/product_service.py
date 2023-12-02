@@ -1,4 +1,4 @@
-# Description: This file handles the database connection related with the employee
+# Description: This file handles the database connection related with the product
 # Author: Sebastian Gámez Ariza
 
 
@@ -6,31 +6,32 @@
 from sqlalchemy import text, create_engine
 from database.connection import engine
 
+
 # Importing types
-from type.employee_type import EmployeeType, EmployeeTypeUpdate
+from type.product_type import ProductType, ProductTypeUpdate
 from type.response_type import ResponseType
 
 
-# Create the employee services class
-class EmployeeService:
+# Create the product services class
+class ProductService:
 
     # Create constructor
     def __init__(self) -> None:
         self.engine: create_engine = engine
 
-    # Create method to get all employees
-    def get_all_employees(self) -> ResponseType[list[EmployeeType]]:
+    # Create method to get all products
+    def get_all_products(self) -> ResponseType[list[ProductType]]:
         # Create the response type
-        response_type: ResponseType[list[EmployeeType]]
+        response_type: ResponseType[list[ProductType]]
         try:
             # Create the connection
             with self.engine.connect() as conn:
                 # Execute the query
-                result = conn.execute(text("select * from empleado"))
+                result = conn.execute(text("select * from producto"))
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
-                    message="Employees found successfully",
+                    message="Products found successfully",
                     data=result.all()
                 )
         except Exception as e:
@@ -45,20 +46,20 @@ class EmployeeService:
         # Return the response type
         return response_type
 
-    # Create method to get an employee by id
-    def get_employee_by_id(self, emp_id: int) -> ResponseType[EmployeeType]:
+    # Create method to get a product by id
+    def get_product_by_id(self, pro_codigo: int) -> ResponseType[ProductType]:
         # Create the response type
-        response_type: ResponseType[EmployeeType]
+        response_type: ResponseType[ProductType]
         try:
             # Create the connection
             with self.engine.connect() as conn:
                 # Execute the query
-                employee, *_ = conn.execute(text("select * from empleado where emp_id = :id"), {"id": emp_id})
+                product, *_ = conn.execute(text("select * from producto where pro_codigo = :id"), {"id": pro_codigo})
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
-                    message="Employee found successfully",
-                    data=employee
+                    message="Product found successfully",
+                    data=product
                 )
         except Exception as e:
             # Create the response type
@@ -72,23 +73,21 @@ class EmployeeService:
         # Return the response type
         return response_type
 
-    # Create method to create an employee
-    def create_employee(self, employee: EmployeeType) -> ResponseType:
+    # Create method to create a product
+    def create_product(self, product: ProductType) -> ResponseType:
         # Create the response type
-        response_type: ResponseType[EmployeeType]
+        response_type: ResponseType[ProductType]
         try:
             # Create the connection
             with self.engine.connect() as conn:
                 # Execute the query
                 conn.execute(
-                    text("insert into empleado(emp_nombre, emp_apellido, emp_telefono, emp_direccion, emp_correo, emp_cargo) values (:emp_nombre, :emp_apellido, :emp_telefono, :emp_direccion, :emp_correo, :emp_cargo)"),
+                    text("insert into producto (pro_nombre, pro_precio, pro_descripcion, pro_categoria) values (:pro_nombre, :pro_precio, :pro_descripcion, :pro_categoria)"),
                     {
-                        "emp_nombre": employee.emp_nombre,
-                        "emp_apellido": employee.emp_apellido,
-                        "emp_telefono": employee.emp_telefono,
-                        "emp_direccion": employee.emp_direccion,
-                        "emp_correo": employee.emp_correo,
-                        "emp_cargo": employee.emp_cargo
+                        "pro_nombre": product.pro_nombre,
+                        "pro_precio": product.pro_precio,
+                        "pro_descripcion": product.pro_descripcion,
+                        "pro_categoria": product.pro_categoria
                     }
                 )
                 # Commit the changes
@@ -96,7 +95,7 @@ class EmployeeService:
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
-                    message="Employee created successfully"
+                    message="Product created successfully",
                 )
         except Exception as e:
             # Create the response type
@@ -110,21 +109,20 @@ class EmployeeService:
         # Return the response type
         return response_type
 
-    # Create method to update an employee
-    def update_employee(self, employee: EmployeeTypeUpdate) -> ResponseType:
+    # Create method to update a product
+    def update_product(self, product: ProductTypeUpdate) -> ResponseType:
         # Create the response type
-        response_type: ResponseType[EmployeeTypeUpdate]
+        response_type: ResponseType[ProductTypeUpdate]
         try:
             # Create the connection
             with self.engine.connect() as conn:
-                for employee_key, employee_value in dict(employee).items():
-                    if employee_key != 'em_id' and employee_value is not None:
-                        # Execute the query
+                for product_key, product_value in dict(product).items():
+                    if product_key != 'pro_codigo' and product_value is not None:
                         conn.execute(
-                            text(f"update empleado set {employee_key} = :value where emp_id = :id"),
+                            text(f"update producto set {product_key} = :{product_key} where pro_codigo = :pro_codigo"),
                             {
-                                "value": employee_value,
-                                "id": employee.emp_id
+                                product_key: product_value,
+                                "pro_codigo": product.pro_codigo
                             }
                         )
                 # Commit the changes
@@ -132,7 +130,7 @@ class EmployeeService:
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
-                    message="Employee updated successfully"
+                    message="Product updated successfully",
                 )
         except Exception as e:
             # Create the response type
@@ -146,21 +144,21 @@ class EmployeeService:
         # Return the response type
         return response_type
 
-    # Create method to delete an employee
-    def delete_employee(self, emp_id: int) -> ResponseType:
+    # Create method to delete a product
+    def delete_product(self, pro_codigo: int) -> ResponseType:
         # Create the response type
-        response_type: ResponseType[EmployeeType]
+        response_type: ResponseType[ProductType]
         try:
             # Create the connection
             with self.engine.connect() as conn:
                 # Execute the query
-                conn.execute(text("delete from empleado where emp_id = :id"), {"id": emp_id})
+                conn.execute(text("delete from producto where pro_codigo = :id"), {"id": pro_codigo})
                 # Commit the changes
                 conn.commit()
                 # Create the response type
                 response_type = ResponseType(
                     status=200,
-                    message="Employee deleted successfully"
+                    message="Product deleted successfully"
                 )
         except Exception as e:
             # Create the response type
