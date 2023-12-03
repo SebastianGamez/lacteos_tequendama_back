@@ -19,6 +19,7 @@ from routes.inventory_route import inventory_router
 from routes.obligation_route import obligation_router
 from routes.product_route import product_router
 from routes.provider_route import provider_router
+from routes.employee_equipment_view_route import employee_equipment_view_router
 
 # Test the database connection
 test_database_connection(engine)
@@ -45,3 +46,4 @@ app.include_router(inventory_router)
 app.include_router(obligation_router)
 app.include_router(product_router)
 app.include_router(provider_router)
+app.include_router(employee_equipment_view_router)
