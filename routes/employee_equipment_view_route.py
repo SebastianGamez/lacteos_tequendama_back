@@ -38,7 +38,7 @@ async def get_all_employee_equipment_views():
 
 
 # Create the route to get an employee equipment view by employee id
-@employee_equipment_view_router.get("/{emp_id}", response_model=ResponseType[list[EmployeeEquipmentViewType]])
+@employee_equipment_view_router.get("/employee_id/{emp_id}", response_model=ResponseType[list[EmployeeEquipmentViewType]])
 async def get_employee_equipment_view_by_employee_id(emp_id: int):
     # Get the response
     response: ResponseType[list[EmployeeEquipmentViewType]] = employee_equipment_view_controller.get_employee_equipment_view_by_employee_id(emp_id)
@@ -50,7 +50,7 @@ async def get_employee_equipment_view_by_employee_id(emp_id: int):
 
 
 # Create the route to get an employee equipment view by equipment id
-@employee_equipment_view_router.get("/{equ_id}", response_model=ResponseType[list[EmployeeEquipmentViewType]])
+@employee_equipment_view_router.get("/equipment_id/{equ_id}", response_model=ResponseType[list[EmployeeEquipmentViewType]])
 async def get_employee_equipment_view_by_equipment_id(equ_id: int):
     # Get the response
     response: ResponseType[list[EmployeeEquipmentViewType]] = employee_equipment_view_controller.get_employee_equipment_view_by_equipment_id(equ_id)
