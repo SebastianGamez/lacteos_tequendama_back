@@ -10,6 +10,7 @@ from database.connection import engine
 from type.response_type import ResponseType
 from type.register_buy_type import RegisterBuyType
 from type.register_sell_type import RegisterSellType
+from type.update_inventory_type import UpdateInventoryType
 
 
 # Create the procedures services class
@@ -77,6 +78,38 @@ class ProceduresService:
                 response_type = ResponseType(
                     status=200,
                     message="Sell registered successfully"
+                )
+        except Exception as e:
+            # Create the response type
+            response_type = ResponseType(
+                status=500,
+                message=str(e)
+            )
+            # Log the error
+            print(e)
+
+        # Return the response type
+        return response_type
+
+    # Create method to update inventory
+    def update_inventory(self, update_inventory: UpdateInventoryType) -> ResponseType:
+        # Create the response type
+        response_type: ResponseType
+        try:
+            # Create the connection
+            with self.engine.connect() as conn:
+                # Execute the query
+                conn.execute(text("call actualizar_inventario(:codigo, :cantidad)"),
+                             {
+                                 "codigo": update_inventory.p_pro_codigo,
+                                 "cantidad": update_inventory.p_cantidad
+                             })
+                # Commit the transaction
+                conn.commit()
+                # Create the response type
+                response_type = ResponseType(
+                    status=200,
+                    message="Inventory updated successfully"
                 )
         except Exception as e:
             # Create the response type

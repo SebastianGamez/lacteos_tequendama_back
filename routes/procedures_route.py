@@ -12,6 +12,7 @@ from controllers.procedures_controller import ProceduresController
 from type.response_type import ResponseType
 from type.register_buy_type import RegisterBuyType
 from type.register_sell_type import RegisterSellType
+from type.update_inventory_type import UpdateInventoryType
 
 # Create the procedures router instance
 procedures_controller: ProceduresController = ProceduresController()
@@ -43,6 +44,18 @@ async def register_buy(register_buy: RegisterBuyType):
 async def register_sell(register_sell: RegisterSellType):
     # Get the response
     response: ResponseType = procedures_controller.register_sell(register_sell)
+    # Check if the status is 200
+    if response.status != 200:
+        raise HTTPException(status_code=response.status, detail=response.message)
+    # Return the data
+    return response
+
+
+# Create the route to update inventory
+@procedures_router.put("/update_inventory", response_model=ResponseType)
+async def update_inventory(update_inventory: UpdateInventoryType):
+    # Get the response
+    response: ResponseType = procedures_controller.update_inventory(update_inventory)
     # Check if the status is 200
     if response.status != 200:
         raise HTTPException(status_code=response.status, detail=response.message)
